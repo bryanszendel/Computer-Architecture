@@ -7,8 +7,11 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        pass
+        self.register = [0] * 256
+        self.pc = 0
+        self.ram = []
 
+    #provided
     def load(self):
         """Load a program into memory."""
 
@@ -30,7 +33,7 @@ class CPU:
             self.ram[address] = instruction
             address += 1
 
-
+    #provided
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
@@ -39,7 +42,8 @@ class CPU:
         #elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
-
+    
+    #provided
     def trace(self):
         """
         Handy function to print out the CPU state. You might want to call this
@@ -60,6 +64,23 @@ class CPU:
 
         print()
 
+    def ram_read(address):
+        value = self.ram[self.pc + 1]
+        print(value)
+
+        self.pc += 1
+
+    def ram_write(address, value):
+        new_value = self.ram[self.pc + 1]
+        reg_num = self.ram[self.pc + 2]
+
+        self.register[reg_num] = value
+
+        pc += 3
+        
     def run(self):
         """Run the CPU."""
-        pass
+        ir = self.pc
+        for memory in self.ram:
+            self.ram_read(ir)
+
