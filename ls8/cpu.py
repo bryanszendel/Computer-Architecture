@@ -7,9 +7,9 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.register = [0] * 256
+        self.register = [0] * 8
         self.pc = 0
-        self.ram = {}
+        self.ram = [0] * 256
 
     #provided
     def load(self):
@@ -39,7 +39,12 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "HLT": 
+            sys.exit(1)
+        elif op == "LDI":
+            self.reg[reg_a] = reg_a
+        elif op == "PRN":
+            print(self.reg[reg_a])
         else:
             raise Exception("Unsupported ALU operation")
     
@@ -76,7 +81,7 @@ class CPU:
 
         self.register[reg_num] = value
 
-        pc += 3
+        self.pc += 3
 
     def run(self):
         """Run the CPU."""
@@ -86,42 +91,53 @@ class CPU:
         operand_a = self.ram_read(ir1)
         operand_b = self.ram_read(ir2)
 
-        # if op == 'ADD':
-        #     operand_a + operand_b
-        # if op == 'AND':        
-        # if op == 'CALL':        
-        # if op == 'CMP':
-        # if op == 'DEC':
-        # if op == 'DIV':
-        # if op == 'HLT':
-        # if op == 'INC':
-        # if op == 'INT':
-        # if op == 'IRET':
-        # if op == 'JEQ':
-        # if op == 'JGE':
-        # if op == 'JGT':
-        # if op == 'JLE':
-        # if op == 'JLT':
-        # if op == 'JMP':
-        # if op == 'JNE':
-        # if op == 'LD':
-        # if op == 'LDI':
-        # if op == 'MOD':
-        # if op == 'MUL':
-        # if op == 'NOP':
-        # if op == 'NOT':
-        # if op == 'OR':
-        # if op == 'POP':
-        # if op == 'PRA':
-        # if op == 'PRN':
-        # if op == 'PUSH':
-        # if op == 'RET':
-        # if op == 'SHL':
-        # if op == 'SHR':
-        # if op == 'ST':
-        # if op == 'SUB':
-        # if op == 'XOR':
-        
+        HLT = 0b00000001
+
+        # halted = False
+        # while not halted:
+        #     instruction = self.ram[self.pc]
+        #     if instruction == HLT:
+        #         halted = True
+
+
+
+
+            # if op == 'ADD':
+            #     operand_a + operand_b
+            # if op == 'AND':        
+            # if op == 'CALL':        
+            # if op == 'CMP':
+            # if op == 'DEC':
+            # if op == 'DIV':
+            # if op == 'HLT':
+            # if op == 'INC':
+            # if op == 'INT':
+            # if op == 'IRET':
+            # if op == 'JEQ':
+            # if op == 'JGE':
+            # if op == 'JGT':
+            # if op == 'JLE':
+            # if op == 'JLT':
+            # if op == 'JMP':
+            # if op == 'JNE':
+            # if op == 'LD':
+            # if op == 'LDI':
+            # if op == 'MOD':
+            # if op == 'MUL':
+            # if op == 'NOP':
+            # if op == 'NOT':
+            # if op == 'OR':
+            # if op == 'POP':
+            # if op == 'PRA':
+            # if op == 'PRN':
+            # if op == 'PUSH':
+            # if op == 'RET':
+            # if op == 'SHL':
+            # if op == 'SHR':
+            # if op == 'ST':
+            # if op == 'SUB':
+            # if op == 'XOR':
+            
 
 
 
