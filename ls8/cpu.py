@@ -9,7 +9,7 @@ class CPU:
         """Construct a new CPU."""
         self.register = [0] * 256
         self.pc = 0
-        self.ram = []
+        self.ram = {}
 
     #provided
     def load(self):
@@ -64,23 +64,64 @@ class CPU:
 
         print()
 
-    def ram_read(address):
-        value = self.ram[self.pc + 1]
+    def ram_read(self, address):
+        value = self.ram[address]
         print(value)
 
         self.pc += 1
 
-    def ram_write(address, value):
+    def ram_write(self, address, value):
         new_value = self.ram[self.pc + 1]
         reg_num = self.ram[self.pc + 2]
 
         self.register[reg_num] = value
 
         pc += 3
-        
+
     def run(self):
         """Run the CPU."""
-        ir = self.pc
-        for memory in self.ram:
-            self.ram_read(ir)
+        ir1 = self.pc + 1
+        ir2 = self.pc + 2
+
+        operand_a = self.ram_read(ir1)
+        operand_b = self.ram_read(ir2)
+
+        # if op == 'ADD':
+        #     operand_a + operand_b
+        # if op == 'AND':        
+        # if op == 'CALL':        
+        # if op == 'CMP':
+        # if op == 'DEC':
+        # if op == 'DIV':
+        # if op == 'HLT':
+        # if op == 'INC':
+        # if op == 'INT':
+        # if op == 'IRET':
+        # if op == 'JEQ':
+        # if op == 'JGE':
+        # if op == 'JGT':
+        # if op == 'JLE':
+        # if op == 'JLT':
+        # if op == 'JMP':
+        # if op == 'JNE':
+        # if op == 'LD':
+        # if op == 'LDI':
+        # if op == 'MOD':
+        # if op == 'MUL':
+        # if op == 'NOP':
+        # if op == 'NOT':
+        # if op == 'OR':
+        # if op == 'POP':
+        # if op == 'PRA':
+        # if op == 'PRN':
+        # if op == 'PUSH':
+        # if op == 'RET':
+        # if op == 'SHL':
+        # if op == 'SHR':
+        # if op == 'ST':
+        # if op == 'SUB':
+        # if op == 'XOR':
+        
+
+
 
