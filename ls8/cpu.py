@@ -10,7 +10,7 @@ class CPU:
         self.pc = 0
         self.ram = [0] * 256
         self.reg = [0] * 8
-        self.rc = 0
+        # self.SP = 0
 
     #provided
     def load(self):
@@ -94,6 +94,10 @@ class CPU:
         LDI = 0b10000010
         PRN = 0b01000111
         MUL = 0b10100010
+        PUSH = 0b01000101
+        POP = 0b01000110
+
+        SP = 255
 
         running = True
         while running:
@@ -107,8 +111,7 @@ class CPU:
                 self.pc += 3
 
             elif IR == PRN:
-                index = self.ram_read(IR+1)
-                print(self.reg[index])
+                print(self.reg[operand_a])
                 self.pc += 2
 
             elif IR == HLT:
@@ -120,7 +123,24 @@ class CPU:
                 self.alu('MUL', operand_a, operand_b)
                 self.pc += 3
 
+            elif IR == PUSH:
+                reg = operand_a
+                val = self.reg[reg]
+                # Decrement the SP
+                SP -= 1
+                # copy the value in the given register tot he address pointed to by
+                # address = self.ram_read(SP)
+                self.ram_write(SP, val)
+                # Increment PC by 2
+                self.pc += 2
 
+            elif IR == POP:
+                # Copy the value from the address pointed to by SP to the given register
+                val = self.ram[SP]
+                # reg = operand_a
+                self.reg[operand_a] = val
+                SP += 1
+                self.pc += 2
 
 
             # if op == 'ADD':
