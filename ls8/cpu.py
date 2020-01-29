@@ -7,31 +7,43 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.register = [0] * 8
         self.pc = 0
         self.ram = [0] * 256
+        self.reg = [0] * 8
+        self.rc = 0
 
     #provided
     def load(self):
         """Load a program into memory."""
-
+        if len(sys.argv) != 2:
+            print("usage: comp.py filename")
+            sys.exit(1)
+        # print('middle of load')
         address = 0
-
+        program = sys.argv[1]
+        with open(program) as f:
+            for line in f:
+                line = line.strip()
+                split_line = line.split("#")[0]
+                if split_line == '':
+                    continue
+                final_val = int(split_line, 2)
+                
+                self.ram[address] = final_val
+                address += 1
+        # print('mem stored', self.ram)
+        # sys.exit(0)
         # For now, we've just hardcoded a program:
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010, # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111, # PRN R0
+        #     0b00000000,
+        #     0b00000001, # HLT
+        # ]
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
-
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
 
     #provided
     def alu(self, op, reg_a, reg_b):
@@ -39,12 +51,8 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        elif op == "HLT": 
-            sys.exit(1)
-        elif op == "LDI":
-            self.reg[reg_a] = reg_a
-        elif op == "PRN":
-            print(self.reg[reg_a])
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
     
@@ -70,34 +78,47 @@ class CPU:
         print()
 
     def ram_read(self, address):
-        value = self.ram[address]
-        print(value)
-
-        self.pc += 1
+        return self.ram[address]
 
     def ram_write(self, address, value):
-        new_value = self.ram[self.pc + 1]
-        reg_num = self.ram[self.pc + 2]
-
-        self.register[reg_num] = value
-
-        self.pc += 3
+        self.ram[address] = value
 
     def run(self):
         """Run the CPU."""
-        ir1 = self.pc + 1
-        ir2 = self.pc + 2
+        # IR = self.ram_read(self.pc)
+        # operand_a = self.ram_read(self.pc + 1)
+        # operand_b = self.ram_read(self.pc + 2)
 
-        operand_a = self.ram_read(ir1)
-        operand_b = self.ram_read(ir2)
 
         HLT = 0b00000001
+        LDI = 0b10000010
+        PRN = 0b01000111
+        MUL = 0b10100010
 
-        # halted = False
-        # while not halted:
-        #     instruction = self.ram[self.pc]
-        #     if instruction == HLT:
-        #         halted = True
+        running = True
+        while running:
+            IR = self.ram_read(self.pc)
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
+
+            if IR == LDI:
+                self.reg[operand_a] = operand_b
+                # print('LDI', self.reg[operand_a])
+                self.pc += 3
+
+            elif IR == PRN:
+                index = self.ram_read(IR+1)
+                print(self.reg[index])
+                self.pc += 2
+
+            elif IR == HLT:
+                running = False
+                self.pc += 1
+                sys.exit(0)
+
+            elif IR == MUL:
+                self.alu('MUL', operand_a, operand_b)
+                self.pc += 3
 
 
 
