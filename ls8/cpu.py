@@ -31,20 +31,7 @@ class CPU:
                 
                 self.ram[address] = final_val
                 address += 1
-        # print('mem stored', self.ram)
-        # sys.exit(0)
-        # For now, we've just hardcoded a program:
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010, # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111, # PRN R0
-        #     0b00000000,
-        #     0b00000001, # HLT
-        # ]
-
-
+        
     #provided
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -82,13 +69,9 @@ class CPU:
 
     def ram_write(self, address, value):
         self.ram[address] = value
-
+    
     def run(self):
         """Run the CPU."""
-        # IR = self.ram_read(self.pc)
-        # operand_a = self.ram_read(self.pc + 1)
-        # operand_b = self.ram_read(self.pc + 2)
-
 
         HLT = 0b00000001
         LDI = 0b10000010
@@ -96,6 +79,9 @@ class CPU:
         MUL = 0b10100010
         PUSH = 0b01000101
         POP = 0b01000110
+        CALL = 0b01010000
+        RET = 0b00010001
+        ADD = 0b10100000
 
         SP = 255
 
@@ -104,12 +90,10 @@ class CPU:
             IR = self.ram_read(self.pc)
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-
             if IR == LDI:
                 self.reg[operand_a] = operand_b
-                # print('LDI', self.reg[operand_a])
                 self.pc += 3
-
+                
             elif IR == PRN:
                 print(self.reg[operand_a])
                 self.pc += 2
@@ -122,26 +106,39 @@ class CPU:
             elif IR == MUL:
                 self.alu('MUL', operand_a, operand_b)
                 self.pc += 3
+            
+            elif IR == ADD:
+                self.alu('ADD', operand_a, operand_b)
+                self.pc += 3
 
             elif IR == PUSH:
                 reg = operand_a
                 val = self.reg[reg]
-                # Decrement the SP
                 SP -= 1
-                # copy the value in the given register tot he address pointed to by
-                # address = self.ram_read(SP)
                 self.ram_write(SP, val)
-                # Increment PC by 2
                 self.pc += 2
 
             elif IR == POP:
-                # Copy the value from the address pointed to by SP to the given register
                 val = self.ram[SP]
-                # reg = operand_a
                 self.reg[operand_a] = val
                 SP += 1
                 self.pc += 2
 
+            elif IR == CALL:
+                val = self.pc + 2 
+                SP -= 1
+                self.ram[SP] = val
+
+                reg = self.ram[operand_a]
+                subroutine_address = self.reg[reg]
+                self.pc = subroutine_address
+
+            elif IR == RET:
+                return_address = self.ram[SP]
+                self.pc = return_address
+                SP += 1
+
+            
 
             # if op == 'ADD':
             #     operand_a + operand_b
